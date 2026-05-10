@@ -30,8 +30,12 @@ export function getChangedFiles(hash1: string, repoPath: string): string[] {
  * @param repoPath Path to the git repository.
  * @returns The content of the file at the specified commit.
  */
-export function getFileContent(fileName: string, hash1: string, repoPath: string): string {
-    return execSync(`git show ${hash1}:${fileName}`, { cwd: repoPath }).toString();
+export function getFileContent(fileName: string, hash: string, repoPath: string): string {
+    return execSync(`git show ${hash}:${fileName}`, { cwd: repoPath }).toString();
+}
+
+export function getFileContentOfPrevious(fileName: string, hash: string, repoPath: string): string {
+    return execSync(`git show ${hash}~1:${fileName}`, { cwd: repoPath }).toString();
 }
 
 /**

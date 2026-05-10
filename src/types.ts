@@ -10,4 +10,6 @@ export interface ChangedText {
     bodyBefore: string,
     bodyAfter: string,
     filePath: string,
+    contextType: 'class' | 'file',
+    typeOfChange?: 'added' | 'deleted' | 'modified' | 'renamed',
 }
