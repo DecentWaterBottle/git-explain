@@ -49,9 +49,7 @@ export function getFileContentOfPrevious(fileName: string, hash: string, repoPat
 export function getTypeOfChange(hash1: string, repoPath: string, fileName?: string): 'added' | 'deleted' | 'modified' | 'renamed' {
     const fileArg = fileName ? `-- ${fileName}` : '';
     const output = execSync(`git diff --name-status ${hash1}~1 ${hash1} ${fileArg}`, { cwd: repoPath }).toString();
-    console.log(output);
     const status = output.trim().split("\t")[0];
-    console.log("Git status for file: ", fileName,  " ",  status);
     if (status === 'A') return 'added';
     if (status === 'D') return 'deleted';
     if (status === 'R') return 'renamed';

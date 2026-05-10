@@ -1,17 +1,32 @@
 import { getChangedFiles, getFileContent, getTypeOfChange, getFileContentOfPrevious } from './git';
 import { ChangedText } from './types';
+import { makePromptForCommitSummary } from './prompts';
 
 export function getFileDiffereces(hash: string, repoPath: string): ChangedText[] {
     const changedFiles = getChangedFiles(hash, repoPath);
     const changes: ChangedText[] = [];
-    console.log("Changed files: ", changedFiles);
     for (const file of changedFiles) {
+
+        const typeOfChange = getTypeOfChange(hash, repoPath, file);
+
+        let bodyBefore = "<empty>";
+        let bodyAfter = "<empty>";
+
+        if (typeOfChange === 'added') {
+            bodyAfter = getFileContent(file, hash, repoPath);
+        } else if (typeOfChange === 'deleted') {
+            bodyBefore = getFileContentOfPrevious(file, hash, repoPath);
+        } else {
+            bodyBefore = getFileContentOfPrevious(file, hash, repoPath);
+            bodyAfter = getFileContent(file, hash, repoPath);
+        }
+
         const change: ChangedText = {
-            bodyBefore: getFileContentOfPrevious(file, hash, repoPath),
-            bodyAfter: getFileContent(file, hash, repoPath),
+            bodyBefore: bodyBefore,
+            bodyAfter: bodyAfter,
             filePath: file,
             contextType: 'file',
-            typeOfChange: getTypeOfChange(hash, repoPath, file),
+            typeOfChange: typeOfChange,
         };
         changes.push(change);
     }
@@ -23,4 +38,10 @@ export function getFileDiffereces(hash: string, repoPath: string): ChangedText[]
     return content.length;
  }
 
- // Data structre: Map of file names to their content before and after (changedFiles: Map<string, ChangedFile>)
+ export function prepareChangesForLLM(changes: ChangedText[]): string {
+    let result = "";
+    for (const change of changes) {
+        result += makePromptForCommitSummary(change);
+    }
+    return result;
+ }
