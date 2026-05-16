@@ -3,8 +3,12 @@ import { ChangedText } from './types';
 import { makePromptForCommitSummary } from './prompts';
 
 export function getFileDiffereces(hash: string, repoPath: string): ChangedText[] {
-    const changedFiles = getChangedFiles(hash, repoPath);
-    const changes: ChangedText[] = [];
+    let changes: ChangedText[] = [];
+    let changedFiles = getChangedFiles(hash, repoPath);
+    if (!changedFiles) {
+        return [];
+    }
+    
     for (const file of changedFiles) {
 
         const typeOfChange = getTypeOfChange(hash, repoPath, file);

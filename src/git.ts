@@ -18,9 +18,14 @@ export function getChangedFilesBetweenCommits(hash1: string, hash2: string, repo
  * @param repoPath Path to the git repository. 
  * @returns A list of files that were changed
  */
-export function getChangedFiles(hash1: string, repoPath: string): string[] {
-    const output = execSync(`git diff --name-only ${hash1}~1 ${hash1}`, { cwd: repoPath }).toString();
-    return output.trim().split("\n");
+export function getChangedFiles(hash1: string, repoPath: string): string[] | null {
+    try {
+        const output = execSync(`git diff --name-only ${hash1}~1 ${hash1}`, { cwd: repoPath, stdio: ['pipe', 'pipe', 'pipe']  }).toString();
+        return output.trim().split("\n");
+    } catch (error) {
+        console.error("Error fetching changed files");
+        return null;
+    }
 }
 
 /**

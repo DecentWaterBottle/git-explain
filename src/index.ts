@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 const { program } = require('commander');
-import { getChangedFiles, getFileContent, getTypeOfChange } from './git';
 import { getFileDiffereces, prepareChangesForLLM } from './context';
 import { getAiResponse } from './ai';
 import ora from "ora";
@@ -22,7 +21,12 @@ program
         options.repo ? repoPath = options.repo : repoPath = ".";        
         const detailed = options.detailed;
         const maxTokens = parseInt(options.maxTokens, 10);
-        const prompt = prepareChangesForLLM(getFileDiffereces(commitHash, repoPath));
+        const changes = getFileDiffereces(commitHash, repoPath);
+        if (changes.length === 0) {
+            spinner.fail("No changes found for the given commit hash.");
+            return;
+        }
+        const prompt = prepareChangesForLLM(changes);
             getAiResponse(prompt, maxTokens).then(response => {
                 spinner.succeed("Response received!");
                 console.log(response);
