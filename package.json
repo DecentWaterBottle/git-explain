@@ -1,15 +1,19 @@
 {
   "name": "git-explain",
   "version": "1.0.0",
-  "description": "",
+  "description": "A CLI tool that explains git commits in plain English",
+  "author": "Jack Carter",
+  "keywords": ["git", "ai", "cli", "commits", "developer-tools"],
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DecentWaterBottle/git-explain"
+  },
   "scripts": {
     "dev": "ts-node src/index.ts",
     "test": "ts-node test/test.ts",
     "build": "tsc"
   },
-  "keywords": [],
-  "author": "",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
