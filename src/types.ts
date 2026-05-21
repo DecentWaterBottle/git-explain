@@ -13,3 +13,13 @@ export interface ChangedText {
     contextType: 'class' | 'file',
     typeOfChange?: 'added' | 'deleted' | 'modified' | 'renamed',
 }
+
+export interface KeyConfig {
+    provider: string,
+    anthropic: {
+        apiKey: string,
+    },
+    openai: {
+        apiKey: string,
+    }
+}

@@ -4,6 +4,7 @@ const { program } = require('commander');
 import { getFileDiffereces, prepareChangesForLLM } from './context';
 import { getAiResponse } from './ai';
 import ora from "ora";
+import { prompt } from 'enquirer';
 
 program
     .name('git-explain')
@@ -36,6 +37,28 @@ program
             });
     });
 
+program.command('configure')
+    .description('Configure the API key')
+    .action(async () => {
+
+        const choiceResponse = await prompt<{ provider: string }>({
+            type: 'select',
+            name: 'provider',
+            message: 'Select the AI provider you want to use:',
+            choices: ['Anthropic', 'OpenAI'],
+        });
+
+         const keyResponse = await prompt<{apiKey: string}>({
+            type: 'input',
+            name: 'apiKey',
+            message: 'Your API key:',
+        });
+        //process.env.ANTHROPIC_API_KEY = response.apiKey;
+        console.log("Api key: ", keyResponse.apiKey);
+        console.log("API key configured successfully!");
+    });
+
 program.parse();
+
 
 
