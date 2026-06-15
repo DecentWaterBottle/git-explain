@@ -4,11 +4,7 @@ import { KeyConfig } from './types';
 const config = new Conf<KeyConfig>();
 
 export function setApiKey(provider: string, apiKey: string): void {
-    if (provider === 'anthropic') {
-        config.set('anthropic', { apiKey });
-    } else if (provider === 'openai') {
-        config.set('openai', { apiKey });
-    }
+    config.set(provider, { apiKey });
 }
 
 export function getApiKey(provider: string): string | undefined {
@@ -20,3 +16,4 @@ export function getApiKey(provider: string): string | undefined {
     }
     return key ? key.apiKey : undefined;
 }
+

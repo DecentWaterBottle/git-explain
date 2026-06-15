@@ -5,6 +5,7 @@ import { getFileDiffereces, prepareChangesForLLM } from './context';
 import { getAiResponse } from './ai';
 import ora from "ora";
 import { prompt } from 'enquirer';
+import { setApiKey } from './config';
 
 program
     .name('git-explain')
@@ -37,7 +38,7 @@ program
             });
     });
 
-program.command('configure')
+program.command('configure-api-key')
     .description('Configure the API key')
     .action(async () => {
 
@@ -53,6 +54,8 @@ program.command('configure')
             name: 'apiKey',
             message: 'Your API key:',
         });
+
+        setApiKey(choiceResponse.provider.toLowerCase(), keyResponse.apiKey);
         //process.env.ANTHROPIC_API_KEY = response.apiKey;
         console.log("Api key: ", keyResponse.apiKey);
         console.log("API key configured successfully!");

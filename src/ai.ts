@@ -1,8 +1,8 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { promptForSystemMission } from './prompts';
-import 'dotenv/config';
+import { getApiKey } from './config';
 
-const client = new Anthropic;
+const client = new Anthropic({ apiKey: getApiKey("anthropic")});
 
 export async function getAiResponse(prompt: string, maxTokens: number): Promise<string> {
     const response = await client.messages.create({
