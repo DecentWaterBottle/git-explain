@@ -14,12 +14,11 @@ export interface ChangedText {
     typeOfChange?: 'added' | 'deleted' | 'modified' | 'renamed',
 }
 
-export interface KeyConfig {
+export interface AppConfig {
     provider: string,
-    anthropic: {
-        apiKey: string,
-    },
-    openai: {
-        apiKey: string,
-    }
+    apiKeys: KeyConfig,
+}
+
+interface KeyConfig {
+    [provider: string]: string
 }

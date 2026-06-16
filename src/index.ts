@@ -5,7 +5,7 @@ import { getFileDiffereces, prepareChangesForLLM } from './context';
 import { getAiResponse } from './ai';
 import ora from "ora";
 import { prompt } from 'enquirer';
-import { setApiKey } from './config';
+import { setApiKey, getActiveProvider, setActiveProvider } from './config';
 
 program
     .name('git-explain')
@@ -38,10 +38,12 @@ program
             });
     });
 
-program.command('configure-api-key')
-    .description('Configure the API key')
-    .action(async () => {
+const key = program.command("api-key")
+    .description("Configure API keys for a provider");
 
+key.command("set")
+    .description("Set the API key for a provider")
+    .action(async() => {
         const choiceResponse = await prompt<{ provider: string }>({
             type: 'select',
             name: 'provider',
@@ -56,10 +58,37 @@ program.command('configure-api-key')
         });
 
         setApiKey(choiceResponse.provider.toLowerCase(), keyResponse.apiKey);
-        //process.env.ANTHROPIC_API_KEY = response.apiKey;
-        console.log("Api key: ", keyResponse.apiKey);
         console.log("API key configured successfully!");
     });
+
+const provider = program.command("provider")
+    .description("Configure the AI provider to use");
+
+provider.command("set")
+    .description("Set the active AI provider")
+    .action(async() => {
+        const choiceResponse = await prompt<{ provider: string }>({
+            type: 'select',
+            name: 'provider',
+            message: 'Select the AI provider you want to use:',
+            choices: ['Anthropic', 'OpenAI'],
+        });
+
+        setActiveProvider(choiceResponse.provider.toLowerCase());
+        console.log("Provider set to " + choiceResponse.provider.toLowerCase());
+    });
+
+provider.command("show")
+    .description("Show the currently active provider")
+    .action(() => {
+        const provider = getActiveProvider();
+        if (!provider) {
+            console.log("No provider configured");
+            return;
+        }
+        console.log(`Active provider: ${provider}`);
+    })
+
 
 program.parse();
 

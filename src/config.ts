@@ -1,19 +1,22 @@
 import Conf from 'conf';
-import { KeyConfig } from './types';
+import { AppConfig } from './types';
 
-const config = new Conf<KeyConfig>();
+const config = new Conf<AppConfig>({ projectName: "git-explain"});
 
 export function setApiKey(provider: string, apiKey: string): void {
-    config.set(provider, { apiKey });
+    const keys = config.get("apiKeys") ?? {}
+    config.set("apiKeys", { ...keys, [provider]: apiKey});
 }
 
 export function getApiKey(provider: string): string | undefined {
-    let key;
-    if (provider === 'anthropic') {
-        key = config.get('anthropic');
-    } else if (provider === 'openai') {
-        key = config.get('openai');
-    }
-    return key ? key.apiKey : undefined;
+    return config.get("apiKeys")?.[provider];
+}
+
+export function setActiveProvider(provider: string): void {
+    config.set('activeProvider', provider);
+}
+
+export function getActiveProvider(): string | undefined {
+    return config.get('activeProvider');
 }
 
